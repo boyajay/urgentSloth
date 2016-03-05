@@ -1,8 +1,16 @@
-<div>
+  <div>
 
   <div class="event create">
     <h2>Name your event:</h2>
     <input type="text" class="form-control eventname text-center" ng-model="eventName" placeholder="Name it and they will come...">
+  </div>
+
+  <!-- Add Description -->
+  <div class="event create">
+    <h2>Add a short description!</h2>
+    <form role="form" id='usrform'>
+      <textarea class="form-control eventname text-center" maxlength="140" ng-model='eventDescription' form="usrform"  placeholder="What's the occasion?"></textarea>
+    </form>
   </div>
 
   <div class="event create">
@@ -18,7 +26,7 @@
     <div class='well well-sm'>
       <div class="row scroll">
         <div style="width: {{friends.length * 190}}px">
-          <div class="square text-center" ng-repeat="friend in friends | filter:{name:friendName}" ng-click="addFriend(friend)">
+          <div class="square text-center addFriendsList" ng-repeat="friend in friends | filter:{name:friendName}" ng-click="addFriend(friend)">
             <img class="card-img-top" src='{{friend.picture}}'>
             <div class="card-block">
               <h4 class="card-title">{{friend.name}}</h4>
@@ -33,7 +41,7 @@
       <h3 class='eventSubtitle' >INVITEES</h3>
       <div class="row text-center">
         <h3 ng-show="showLonelyMessage">{{lonelyMessage}}</h3>
-        <div class="square text-center" ng-repeat="attendee in attendees" ng-click="removeFriend(attendee)">
+        <div class="square text-center invitees" ng-repeat="attendee in attendees" ng-click="removeFriend(attendee)">
           <img class="card-img-top" src='{{attendee.picture}}'>
           <div class="card-block">
             <h4 class="card-title">{{attendee.name}}</h4>
@@ -151,13 +159,6 @@
       </a>
     </div>
 
-  </div>
-  <!-- Add Description -->
-  <div class="event create"><h3>Add a short description!</h3>
-    <form role="form">
-      <label for="EnterDescription">Enter a Description</label>
-      <input type="text" id="AddEventDescription" ng-model="eventDescription">
-    </form>
   </div>
 
 

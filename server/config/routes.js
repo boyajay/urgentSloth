@@ -11,9 +11,9 @@ module.exports = function(app) {
   // handle things like api calls
   // authentication routes
 
-  //user routes 
+  //user routes
   app.get('/api/users', UserController.getUsers);
-  
+
   app.get('/api/users/:fbId', UserController.getUserFriends);
 
   app.post('/api/users/removeEvent', UserController.removeEvent);
@@ -44,15 +44,16 @@ module.exports = function(app) {
   // route to handle all facebook passport requests
 
   app.get('/login/facebook',
-    passport.authenticate('facebook', {scope: ['user_friends']}));
+    passport.authenticate('facebook', {scope: ['user_friends', 'email']}));
 
-  app.get('/login/facebook/return', 
+  app.get('/login/facebook/return', // this path is the callbackURL that matches the one stored in the auth.js
     passport.authenticate('facebook', { failureRedirect: '/' }),
     function(req, res) {
       //check users events and decide any passed deadline
       EventController.decideUsersEvents(req.user.id);
 
       //send cookie so client side has user info
+      res.cookie('email', req.user.email);
       res.cookie('name',req.user.displayName);
       res.cookie('fbId',req.user.id);
       res.cookie('picture',req.user.photos[0].value);

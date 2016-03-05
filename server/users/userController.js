@@ -9,18 +9,27 @@ var createUser = Q.nbind(User.create, User);
 module.exports = {
 
   removeEvent: function (req, res) {
+    console.log(req);
     var fbId = req.body.fbId;
-    var eventId = req.body.fbId;
+    var eventId = req.body.eventID;
 
     findUser({fbId: fbId})
       .then(function (user) {
         if (user) {
+          console.log('all user events are ', user.events);
+
+          var eventList = [];
+          // user.events.forEach()
           var eventIndex = user.events.indexOf(eventId);
+          console.log('the event id is ', eventId);
+          console.log('index of removal is ', eventIndex);
+          // if()
           user.events.splice(eventIndex,1);
+          console.log('after removal, event list is ', user.events);
           user.save(function(err) {
                       if (err) {
                         console.error(err);
-                      } 
+                      }
                     });
         } else {
           console.error('Error finding user');
@@ -45,6 +54,7 @@ module.exports = {
         .then(function (user) {
           if(user !== null){
             var friendArray = user.friends.map(function(friend) {
+
               return friend.fbId;
             });
             getAllUsers({'fbId': {$in: friendArray}})
@@ -57,7 +67,7 @@ module.exports = {
           }
         });
   },
-  
+
   addEventToUsers: function (usersArray, eventId) {
     getAllUsers({'fbId': {$in: usersArray}})
       .then(function(users) {
@@ -66,38 +76,44 @@ module.exports = {
           user.save(function(err) {
             if (err) {
               console.error(err);
-            } 
+            }
           });
         });
       });
   },
 
   createOrFindOne: function (profile) {
+    // console.log(profile);
     var fbId = profile.id;
     var name = profile.displayName;
     var picture = profile.photos[0].value;
+    var email = profile.email;
     var friends = profile._json.friends.data.map(function(friend) {
-      return {fbId: friend.id}; 
+      return {fbId: friend.id};
     });
 
       findUser({fbId: fbId})
         .then(function (match) {
-          //if there's no match, we want to create a new user 
+          //if there's no match, we want to create a new user
           if (match === null) {
+            console.log("EMAIL IS ", email);
             var newUser = {
               name: name,
               fbId: fbId,
               picture: picture,
-              friends: friends
+              friends: friends,
+              email: email,
             };
             createUser(newUser);
-          } else {// if user already exists, update user's friends and prof pic in the database
+          } else {// if user already exists, update user's friends, prof pic, and email in the database
+            console.log("EMAIL IS ", email);
             match.friends = friends;
             match.picture = picture;
+            match.email = email;
             match.save(function (err) {
                 if (err){
                   return handleError(err);
-                } 
+                }
               });
           }
         })
