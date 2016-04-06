@@ -1,7 +1,5 @@
 angular.module('CalendarCtrl', [])
 .controller('CalendarController',function($scope, $window, $cookies, Event, User) {
-
-  $scope.test ="hello world";
   $scope.calendarEvents = [];
   $scope.firstName = "YOUR";
   $scope.firstName = $cookies.get('name').split(' ')[0].toUpperCase()+"'S";
